@@ -1,11 +1,18 @@
 {
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "nuxi build",
+    "generate": "nuxi generate",
+    "start": "nuxi preview"
   },
   "devDependencies": {
+    "@vant/nuxt": "^1.0.2",
+    "postcss-pxtorem": "^6.0.0",
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "three": "^0.155.0"
+    "nuxt": "^3.6.5",
+    "three": "^0.155.0",
+    "vant": "^4.6.6"
   }
 }
