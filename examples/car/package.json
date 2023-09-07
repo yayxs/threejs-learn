@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@tweenjs/tween.js": "^21.0.0"
+  }
+}

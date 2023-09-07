@@ -9,6 +9,10 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js'
 import { onMounted } from 'vue'
+import {
+  CSS2DRenderer,
+  CSS2DObject
+} from 'three/addons/renderers/CSS2DRenderer.js' // CSS2DRenderer 是一个附加组件，必须显式导入
 
 let camera
 let scene
@@ -46,8 +50,9 @@ const init = () => {
     0.1,
     100
   ) // 摄像机视锥体垂直视野角度50 摄像机视锥体长宽比1  摄像机视锥体近端面0.1  摄像机视锥体远端面2000
-  camera.position.set(4.25, 1.4, -4.5)
-
+  // camera.position.set(4.25, 1.4, -4.5) // x y z
+  camera.position.set(5.8, 3, -2) // x y z
+  // camera.lookAt(0, 0, 0)
   /** 可以使得相机围绕目标进行轨道运动  */
   controls = new OrbitControls(camera, container) // 将要被控制的相机 用于事件监听的HTML元素
   controls.maxDistance = 9 // 你能够将相机向外移动多少 Infinity
@@ -71,11 +76,19 @@ const init = () => {
   dracoLoader.setDecoderPath('/jsm/libs/draco/gltf/')
   const loader = new GLTFLoader() // 用于载入glTF 2.0资源的加载器
   loader.setDRACOLoader(dracoLoader) // HREE.DRACOLoader的实例，用于解码使用KHR_draco_mesh_compression扩展压缩过的文件。
+  // tesla_2018_model_3
+  // ferrari
   loader.load('/models/gltf/ferrari.glb', (gltf) => {
     console.log('car-gltf', gltf)
     const carModel = gltf.scene.children[0] // 取到车的模型
 
-    scene.add(carModel)
+    console.log('carModel', carModel)
+
+    carModel.traverse((value) => {
+      // console.log('value', value)
+    })
+    // scene.add(carModel)
+    scene.add(gltf.scene)
   })
 }
 
@@ -85,7 +98,12 @@ const render = () => {
   renderer.render(scene, camera)
 }
 
-const onWindowResize = () => {}
+const onWindowResize = () => {
+  camera.aspect = window.innerWidth / window.innerWidth
+  camera.updateProjectionMatrix()
+
+  renderer.setSize(window.innerWidth, window.innerWidth)
+}
 
 onMounted(() => {
   init()

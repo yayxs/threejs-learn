@@ -19,8 +19,15 @@ importers:
       postcss-pxtorem: 6.0.0
       vite: 4.4.9
 
+  examples/car:
+    specifiers:
+      '@tweenjs/tween.js': ^21.0.0
+    dependencies:
+      '@tweenjs/tween.js': 21.0.0
+
   examples/vite-three-starter:
     specifiers:
+      '@tweenjs/tween.js': ^21.0.0
       '@vitejs/plugin-vue': ^4.3.4
       autoprefixer: ^10.4.15
       postcss: ^8.4.29
@@ -34,6 +41,7 @@ importers:
       vue: ^3.3.4
       vue-router: ^4.2.4
     dependencies:
+      '@tweenjs/tween.js': 21.0.0
       three: 0.156.1
       vant: 4.6.7_vue@3.3.4
       vue: 3.3.4
@@ -47,6 +55,12 @@ importers:
       sass: 1.66.1
       unplugin-vue-components: 0.25.2_vue@3.3.4
       vite: 4.4.9_sass@1.66.1
+
+  packages/tween:
+    specifiers:
+      '@tweenjs/tween.js': ^21.0.0
+    dependencies:
+      '@tweenjs/tween.js': 21.0.0
 
 packages:
 
@@ -1257,6 +1271,10 @@ packages:
   /@trysound/sax/0.2.0:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+    dev: false
+
+  /@tweenjs/tween.js/21.0.0:
+    resolution: {integrity: sha512-qVfOiFh0U8ZSkLgA6tf7kj2MciqRbSCWaJZRwftVO7UbtVDNsZAXpWXqvCDtIefvjC83UJB+vHTDOGm5ibXjEA==}
     dev: false
 
   /@types/estree/1.0.1:
