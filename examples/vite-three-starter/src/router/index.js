@@ -7,6 +7,11 @@ const routes = [
     component: () => import('@/views/car/index.vue')
   },
   {
+    path: '/door',
+    name: 'Door',
+    component: () => import('@/views/door/index.vue')
+  },
+  {
     path: '/',
     redirect: '/home'
   }

@@ -188,3 +188,6 @@ function setupTweenDoor(source, target, mesh) {
   carTween.start()
 }
 init()
+export function handleClick() {
+  console.log('打开车门')
+}
