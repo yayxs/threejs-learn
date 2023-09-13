@@ -25,6 +25,12 @@ importers:
     dependencies:
       '@tweenjs/tween.js': 21.0.0
 
+  examples/open-door:
+    specifiers:
+      '@tweenjs/tween.js': ^21.0.0
+    dependencies:
+      '@tweenjs/tween.js': 21.0.0
+
   examples/vite-three-starter:
     specifiers:
       '@tweenjs/tween.js': ^21.0.0
