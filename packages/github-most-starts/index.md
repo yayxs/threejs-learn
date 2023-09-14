@@ -22,3 +22,4 @@ https://github.com/kekkorider/threejs-starter/blob/main/src/index.js
 https://github.com/alwxkxk/threejs-example
 
 page 46
+https://github.com/pachoclo/vite-threejs-ts-template/blob/main/src/scene.ts

@@ -25,6 +25,8 @@ let detailsMaterial
 let labelRenderer // label标记
 let gui
 
+let grid // 网格线
+
 const init = () => {
   const container = document.getElementById('app')
   renderer = new THREE.WebGLRenderer({
@@ -33,6 +35,7 @@ const init = () => {
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setAnimationLoop(render)
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
   container.appendChild(renderer.domElement)
   window.addEventListener('resize', onWindowResize)
 
@@ -79,9 +82,7 @@ const init = () => {
 
   scene = new THREE.Scene()
   scene.background = new THREE.Color(0x333333)
-  scene.environment = new RGBELoader().load(
-    '/textures/equirectangular/venice_sunset_1k.hdr'
-  )
+  scene.environment = new RGBELoader().load('/venice_sunset_1k.hdr')
   scene.environment.mapping = THREE.EquirectangularReflectionMapping
   scene.fog = new THREE.Fog(0x333333, 10, 15)
 
@@ -89,7 +90,12 @@ const init = () => {
   scene.add(ambientLight)
   const axesHelper = new THREE.AxesHelper(2)
   scene.add(axesHelper)
-
+  /** 网格 */
+  grid = new THREE.GridHelper(20, 40, 0xffffff, 0xffffff) // 尺寸默认10 细分次数默认10 中线颜色 网格线颜色
+  grid.material.opacity = 0.2
+  grid.material.depthWrite = false
+  grid.material.transparent = true
+  scene.add(grid)
   /** 材质 */
   车身的材质 = new THREE.MeshPhysicalMaterial({
     color: '#6e2121', //
@@ -228,8 +234,32 @@ function setupDatGui() {
   gui.addColor(gc, '玻璃颜色').onChange(() => {
     glassMaterial.color.set(gc.玻璃颜色)
   })
+
+  const params = {
+    车内视角: carIn
+  }
+  gui.add(params, '车内视角')
 }
 
+const carIn = () => {
+  console.log('进入车内')
+  openDoor()
+  setupTweenCamera(
+    { cx: 4.25, cy: 1.4, cz: -4.5, ox: 0, oy: 0.5, oz: 0 },
+    { cx: -0.27, cy: 0.83, cz: -0.9, ox: 0, oy: 0.5, oz: -3 }
+  )
+}
+const setupTweenCamera = (pos, target) => {
+  const tween = new TWEEN.Tween(pos)
+    .to(target, 3000)
+    .easing(TWEEN.Easing.Quadratic.Out)
+  tween.onUpdate((object) => {
+    camera.position.set(object.cx, object.cy, object.cz)
+    controls.target.set(object.ox, object.oy, object.oz)
+  })
+
+  tween.start()
+}
 const setupTweenDoor = (pos, target, mesh) => {
   // 参数1 起点的位置
   // 参数2 1000ms
@@ -278,6 +308,9 @@ function render() {
   controls.update()
   renderer.render(scene, camera)
   labelRenderer.render(scene, camera)
+  const time = -performance.now() / 1000
+  // console.log('z', -time % 1)
+  grid.position.z = -time % 1
 }
 
 init()
