@@ -3,11 +3,14 @@ import {
   WebGLRenderer,
   Scene,
   Color,
-  AxesHelper
+  AxesHelper,
+  AmbientLight,
+  EquirectangularReflectionMapping
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js' // three.js 的扩展库 专门用来加载gltf格式模型加载器
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js' // DRACOLoader 是一个附加组件，必须显式导入
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js'
 class UseThree {
   constructor() {
     this.scene = void 0
@@ -26,6 +29,8 @@ class UseThree {
     this.cameraSetOrbitControls()
     this.setScene() // 虚拟的场景
     this.sceneAddModel()
+    this.sceneAddAxesHelper()
+    // this.sceneAddHJG()
   }
 
   /**
@@ -34,6 +39,10 @@ class UseThree {
   setScene() {
     this.scene = new Scene()
     this.scene.background = new Color(0xffffff) // 0x333333
+
+    // 光照信息的环境hdr图
+    this.scene.environment = new RGBELoader().load('/venice_sunset_1k.hdr')
+    this.scene.environment.mapping = EquirectangularReflectionMapping
   }
   /**
    * 3d项目使用透视投影相机
@@ -43,21 +52,31 @@ class UseThree {
     // fov : 50, aspect : width / height, near : 0.1, far : 20000
     this.camera = new PerspectiveCamera(50, this.width / this.height, 0.1, 3000)
     // 设置相机的位置参数
-    this.camera.position.set(5, 5, 5)
+    this.camera.position.set(-8, 1.98, -1.57)
   }
   /**
    * 相机添加控件
    */
   cameraSetOrbitControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.addEventListener('change', (res) => {
+    this.controls.addEventListener('change', () => {
       // 监听鼠标、键盘事件
-      console.log('改变相机的参数', res)
+      // console.log('改变相机的参数', res)
       console.log('this.camera', this.camera.position)
+      console.log('controls.target', this.controls.target) // 0 0 0
     })
+    const x = 0,
+      y = 0,
+      z = 0 // 通过OrbitControls辅助设置
+    this.camera.lookAt(x, y, z)
+    this.controls.target.set(x, y, z) //与lookAt参数保持一致
+    this.controls.update()
   }
   animationLoopCb() {
+    this.controls.update()
     this.renderer.render(this.scene, this.camera)
+    // console.log('camera.position', this.camera.position)
+    // console.log('controls.target', this.controls.target)
   }
   /**
    * 创建渲染器
@@ -112,8 +131,15 @@ class UseThree {
    * 往场景中添加 Axes Helper
    */
   sceneAddAxesHelper() {
-    const axesHelper = new AxesHelper(8)
-    scene.add(axesHelper)
+    const axesHelper = new AxesHelper(3)
+    this.scene.add(axesHelper)
+  }
+  /**
+   * 添加环境光
+   */
+  sceneAddHJG() {
+    const light = new AmbientLight(0xffffff, 1) // 默认白色的color 对象 强度1
+    this.scene.add(light)
   }
   /**
    * 用于压缩和解压缩3d网格点云的开源库，压缩后更小 需要额外的解码时间
@@ -158,6 +184,8 @@ class UseThree {
               this._setLoad(false)
             }, 1000)
           }
+
+          console.log((params.loaded / params.total) * 100 + '% loaded')
         },
         (err) => {
           console.error('loading3DModel loader.load模型加载异常', err)
