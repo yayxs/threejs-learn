@@ -5,7 +5,12 @@ import {
   Color,
   AxesHelper,
   AmbientLight,
-  EquirectangularReflectionMapping
+  EquirectangularReflectionMapping,
+  TextureLoader,
+  DoubleSide,
+  PlaneGeometry,
+  Mesh,
+  MeshBasicMaterial
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js' // three.js 的扩展库 专门用来加载gltf格式模型加载器
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js' // DRACOLoader 是一个附加组件，必须显式导入
@@ -31,6 +36,7 @@ class UseThree {
     this.sceneAddModel()
     this.sceneAddAxesHelper()
     // this.sceneAddHJG()
+    // this.loadImage()
   }
 
   /**
@@ -124,6 +130,28 @@ class UseThree {
     if (loadModelRes.code === 0) {
       const model = loadModelRes?.gltf?.scene
       console.log(model)
+      const loader = new TextureLoader()
+      loader.load('/plate.jpg', (texture) => {
+        console.log(texture)
+        const SIZE = 20
+        const img = texture.image
+
+        // let height = (img && img.height) || SIZE
+        // let width = (img && img.width) || SIZE
+        // height = (SIZE / width) * height
+        // width = SIZE
+        const mat = new MeshBasicMaterial({
+          map: texture,
+          side: DoubleSide,
+          transparent: true
+        })
+        const geom = new PlaneGeometry(0.5, 0.17)
+        geom.rotateX(-Math.PI / 9)
+        const mesh = new Mesh(geom, mat)
+        mesh.position.set(0, 0.6, 2.23)
+        model.add(mesh)
+      })
+
       this.scene.add(model)
     }
   }
@@ -151,6 +179,33 @@ class UseThree {
   }
   _setLoad(val) {
     this.isLoadModel = val
+  }
+  /**
+   * 加载图片
+   */
+  loadImage() {
+    return new Promise((resolve, reject) => {
+      const loader = new TextureLoader()
+      loader.load('/plate.jpg', (texture) => {
+        console.log(texture)
+        const SIZE = 20
+        const img = texture.image
+
+        // let height = (img && img.height) || SIZE
+        // let width = (img && img.width) || SIZE
+        // height = (SIZE / width) * height
+        // width = SIZE
+        const mat = new MeshBasicMaterial({
+          map: texture,
+          side: DoubleSide,
+          transparent: true
+        })
+        const geom = new PlaneGeometry(0.5, 0.2)
+        const mesh = new Mesh(geom, mat)
+        mesh.position.set(0, 0.6, 2.23)
+        this.scene.add(mesh)
+      })
+    })
   }
   /**
    * 加载3D模型 glb就是gltf格式的二进制文件
